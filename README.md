@@ -3,17 +3,30 @@
 
 # TRaiFIC: Automatic Nepali Number Plate Recognition System
 
-TRaiFIC is an Automatic Number Plate Recognition (ANPR) system designed specifically for Nepali license plates. The system utilizes multiple machine learning models in a pipeline architecture to detect license plates, segment characters, and perform optical character recognition.
+This repository focuses on deployment and integration updates added on top of an existing Nepali number plate OCR model.
 
-## 🔍 Overview
+## What Was Added
 
-This project implements a complete ANPR pipeline:
+This version is mainly about making the service production/integration ready.
 
-1. **Plate Detection** - Detects license plates from images or video frames
-2. **Character Segmentation** - Segments individual characters from the detected plate
-3. **Character Recognition** - Recognizes the segmented characters
+1. Added machine-to-machine API endpoint: `POST /api/v1/ocr`
+2. Added optional token auth via `OCR_API_TOKEN`
+3. Added token header support:
+  - `X-API-Token`
+  - `Authorization: Bearer <token>`
+4. Added request validation for file upload and extension checks
+5. Added structured JSON errors with integration-friendly status codes:
+  - `401` unauthorized
+  - `400` bad request
+  - `503` models unavailable
+  - `500` internal error
+6. Added startup logging for auth mode (enabled/disabled)
+7. Added Odoo-friendly API docs and examples
+8. Added run/troubleshooting guidance (including exit `127` workaround)
 
-The system is deployed as a Flask web application for easy interaction.
+## Base Model Note
+
+Core OCR model logic remains the same. Most changes here are around API access, security, configuration, and integration workflow.
 
 ## 📂 Project Structure
 
@@ -171,12 +184,10 @@ If `python -m TraificNPR.application.app` fails with exit code `127` from your s
 
 This bypasses broken local launcher scripts and starts the service reliably.
 
-## 🔄 Pipeline Process
+## 🔄 Base Pipeline (Unchanged)
 
-The ANPR system follows this workflow:
+1. Plate Detection (PD)
+2. Character Segmentation (SG)
+3. Character Recognition (CHAR)
 
-1. **Plate Detection (PD)**: Uses YOLOv8-based model to detect license plates in images
-2. **Segmentation (SG)**: Isolates and segments characters from the detected plate
-3. **Character Recognition (CHAR)**: Recognizes individual characters using a trained model
-
-Model pipeline: `PD → SG → CHAR`
+Pipeline: `PD -> SG -> CHAR`
